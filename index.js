@@ -136,7 +136,7 @@ const background = new Sprite({
   imageSrc: "./img/map.png",
 });
 
-const backgroundImageHeight = 576;
+const backgroundImageHeight = 432;
 
 const camera = {
   position: {
@@ -216,7 +216,7 @@ function animate() {
   c.scale(canvasScale, canvasScale);
   c.translate(
     camera.position.x,
-    -background.image.height + scaledCanvas.height
+    camera.position.y,
   );
   background.update();
 
@@ -239,10 +239,10 @@ function animate() {
   }
 
   if (player.velocity.y < 0) {
-    player.shouldPanCameraUp({ canvas, camera });
+    player.shouldPanCameraDown({ canvas, camera });
     player.switchSprite("Jump");
   } else if (player.velocity.y > 0) {
-    player.shouldPanCameraDown({ canvas, camera });
+    player.shouldPanCameraUp({ canvas, camera });
   }
 
   updateEnemies();
