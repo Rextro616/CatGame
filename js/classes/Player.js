@@ -67,7 +67,7 @@ class Player extends Sprite {
 
   checkForHorizontalCanvasCollision() {
     if (
-      this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 432 ||
+      this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 490 ||
       this.hitbox.position.x + this.velocity.x <= 0
     ) {
       this.velocity.x = 0;
@@ -112,7 +112,7 @@ class Player extends Sprite {
 
     if (
       this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
-      432 // Este valor puede ser ajustado según la altura de tu juego
+      432 
     ) {
       this.velocity.y = 0;
       return;
