@@ -125,14 +125,14 @@ const background = new Sprite({
   imageSrc: "./img/map.png",
 });
 
-const backgroundImageHeight = 576
+const backgroundImageHeight = 576;
 
 const camera = {
   position: {
     x: 0,
     y: -backgroundImageHeight + scaledCanvas.height,
   },
-}
+};
 
 function animate() {
   window.requestAnimationFrame(animate);
@@ -141,15 +141,11 @@ function animate() {
 
   c.save();
   c.scale(canvasScale, canvasScale);
-  c.translate(0, -background.image.height + scaledCanvas.height);
+  c.translate(
+    camera.position.x,
+    -background.image.height + scaledCanvas.height
+  );
   background.update();
-
-  collisionBlocks.forEach((collisionBlock) => {
-    collisionBlock.update();
-  });
-  platformCollisionBlocks.forEach((block) => {
-    block.update();
-  });
 
   player.update();
 
@@ -158,16 +154,20 @@ function animate() {
   if (keys.d.pressed) {
     player.switchSprite("Run");
     player.velocity.x = 2;
-    player.shouldPanCameraToTheLeft({ canvas, camera })
+    player.shouldPanCameraToTheLeft({ canvas, camera });
   } else if (keys.a.pressed) {
     player.switchSprite("Run");
     player.velocity.x = -2;
+    player.shouldPanCameraToTheRight({ canvas, camera });
   } else if (player.velocity.y === 0) {
     player.switchSprite("Idle");
   }
 
   if (player.velocity.y < 0) {
+    player.shouldPanCameraDown({ canvas, camera });
     player.switchSprite("Jump");
+  } else if (player.velocity.y > 0) {
+    player.shouldPanCameraUp({ canvas, camera });
   }
 
   c.restore();

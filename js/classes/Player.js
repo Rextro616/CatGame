@@ -61,7 +61,7 @@ class Player extends Sprite {
       },
       width: 200,
       height: 80,
-    }
+    };
   }
 
   checkForHorizontalCanvasCollision() {
@@ -69,21 +69,54 @@ class Player extends Sprite {
       this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 576 ||
       this.hitbox.position.x + this.velocity.x <= 0
     ) {
-      this.velocity.x = 0
+      this.velocity.x = 0;
     }
   }
 
   shouldPanCameraToTheLeft({ canvas, camera }) {
-    const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width/2
+    const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width
     const scaledDownCanvasWidth = canvas.width / 4
-    console.log(this.camerabox.position.x)
-    console.log(this.camerabox.width)
-    console.log(scaledDownCanvasWidth)
+    console.log(cameraboxRightSide)
+    if (cameraboxRightSide >= 480) return
+
     if (
       cameraboxRightSide >=
-      scaledDownCanvasWidth
+      scaledDownCanvasWidth + Math.abs(camera.position.x)
     ) {
-      console.log("a")
+      camera.position.x -= this.velocity.x
+    }
+  }
+
+  shouldPanCameraToTheRight({ canvas, camera }) {
+    if (this.camerabox.position.x <= 0) return;
+
+    if (this.camerabox.position.x <= Math.abs(camera.position.x)) {
+      camera.position.x -= this.velocity.x;
+    }
+  }
+
+  shouldPanCameraDown({ canvas, camera }) {
+    if (this.camerabox.position.y + this.velocity.y <= 0) return;
+
+    if (this.camerabox.position.y <= Math.abs(camera.position.y)) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
+  shouldPanCameraUp({ canvas, camera }) {
+    if (
+      this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
+      432
+    )
+      return;
+
+    const scaledCanvasHeight = canvas.height / 4;
+
+    if (
+      this.camerabox.position.y + this.camerabox.height >=
+      Math.abs(camera.position.y) + scaledCanvasHeight
+    ) {
+      camera.position.y -= this.velocity.y;
     }
   }
 
