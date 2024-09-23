@@ -100,7 +100,10 @@ class Player extends Sprite {
   }
 
   shouldPanCameraDown({ canvas, camera }) {
-    if (this.camerabox.position.y + this.velocity.y <= 0) return;
+    if (this.camerabox.position.y + this.velocity.y <= 0) {
+      this.velocity.y = 0;
+      return;
+    }
 
     if (this.camerabox.position.y <= Math.abs(camera.position.y)) {
       camera.position.y -= this.velocity.y;
@@ -112,7 +115,7 @@ class Player extends Sprite {
 
     if (
       this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
-      432 
+      480
     ) {
       this.velocity.y = 0;
       return;
