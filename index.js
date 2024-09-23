@@ -219,7 +219,7 @@ function animate() {
     camera.position.y,
   );
   background.update();
-
+  player.checkForHorizontalCanvasCollision();
   player.update();
 
   enemyCollision();

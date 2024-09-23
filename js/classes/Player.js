@@ -67,7 +67,7 @@ class Player extends Sprite {
 
   checkForHorizontalCanvasCollision() {
     if (
-      this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 576 ||
+      this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 432 ||
       this.hitbox.position.x + this.velocity.x <= 0
     ) {
       this.velocity.x = 0;
@@ -77,7 +77,9 @@ class Player extends Sprite {
   shouldPanCameraToTheLeft({ canvas, camera }) {
     const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width;
     const scaledDownCanvasWidth = canvas.width / 2.5;
-    if (cameraboxRightSide >= 480) return;
+    if (cameraboxRightSide >= 480) {
+      return;
+    }
 
     if (
       cameraboxRightSide >=
@@ -88,7 +90,9 @@ class Player extends Sprite {
   }
 
   shouldPanCameraToTheRight({ canvas, camera }) {
-    if (this.camerabox.position.x <= 0) return;
+    if (this.camerabox.position.x <= 0) {
+      return;
+    }
 
     if (this.camerabox.position.x <= Math.abs(camera.position.x)) {
       camera.position.x -= this.velocity.x;
@@ -105,14 +109,15 @@ class Player extends Sprite {
 
   shouldPanCameraUp({ canvas, camera }) {
     const scaledCanvasHeight = canvas.height / 2.5;
-  
+
     if (
       this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
       432 // Este valor puede ser ajustado según la altura de tu juego
     ) {
+      this.velocity.y = 0;
       return;
     }
-  
+
     if (
       this.camerabox.position.y + this.camerabox.height >=
       Math.abs(camera.position.y) + scaledCanvasHeight
