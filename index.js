@@ -5,6 +5,7 @@ canvas.width = 1024;
 canvas.height = 576;
 
 const canvasScale = 2.5;
+let isGameOver = false;
 
 const scaledCanvas = {
   width: canvas.width / canvasScale,
@@ -114,6 +115,16 @@ const player = new Player({
       frameRate: 13,
       frameBuffer: 9,
     },
+    Die: {
+      imageSrc: "./img/Cat/Die2Catd.png",
+      frameRate: 14,
+      frameBuffer: 9,
+    },
+    Hurt: {
+      imageSrc: "./img/Cat/HurtCatd.png",
+      frameRate: 7,
+      frameBuffer: 3,
+    },
   },
 });
 
@@ -134,7 +145,69 @@ const camera = {
   },
 };
 
+const lifeCounterWorker = new Worker("./js/workers/lifeCounterWorker.js");
+
+lifeCounterWorker.onmessage = (event) => {
+  const { type, lives } = event.data;
+
+  if (type === "livesUpdated") {
+    document.getElementById("lifes").innerText = `Vida restante: ${lives}`;
+  } else if (type === "gameOver") {
+    isGameOver = true;
+  }
+};
+
+// Función para disminuir las vidas
+function decreaseLife() {
+  lifeCounterWorker.postMessage({ type: "decreaseLife" });
+}
+
+// Función para obtener las vidas actuales
+function getLives() {
+  lifeCounterWorker.postMessage({ type: "getLives" });
+}
+
+const worker = new Worker("./js/workers/timerWorker.js");
+
+worker.onmessage = function (event) {
+  document.getElementById("timer").innerText = `${event.data}`;
+};
+
+const enemies = []; // Almacena los enemigos
+
+const enemyWorker = new Worker("./js/workers/enemyWorker.js");
+
+enemyWorker.onmessage = function (event) {
+  const { type, enemy } = event.data;
+  if (type === "newEnemy") {
+    enemies.push(
+      new Enemy(
+        enemy.id,
+        enemy.x,
+        enemy.y,
+        enemy.spdX,
+        enemy.spdY,
+        enemy.width,
+        enemy.height,
+        enemy.color
+      )
+    );
+  }
+};
+
+function updateEnemies() {
+  enemies.forEach((enemy) => {
+    enemy.update();
+  });
+}
+
 function animate() {
+  if (isGameOver) {
+    console.log("a");
+    worker.postMessage("stop");
+    player.switchSprite("Die");
+    return
+  }
   window.requestAnimationFrame(animate);
   c.fillStyle = "white";
   c.fillRect(0, 0, canvas.width, canvas.height);
@@ -148,6 +221,8 @@ function animate() {
   background.update();
 
   player.update();
+
+  enemyCollision();
 
   player.velocity.x = 0;
 
@@ -164,13 +239,17 @@ function animate() {
   }
 
   if (player.velocity.y < 0) {
-    player.shouldPanCameraDown({ canvas, camera });
+    player.shouldPanCameraUp({ canvas, camera });
     player.switchSprite("Jump");
   } else if (player.velocity.y > 0) {
-    player.shouldPanCameraUp({ canvas, camera });
+    player.shouldPanCameraDown({ canvas, camera });
   }
+
+  updateEnemies();
 
   c.restore();
 }
 
+getLives();
+worker.postMessage("start");
 animate();

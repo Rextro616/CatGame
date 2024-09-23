@@ -3,6 +3,7 @@ class Player extends Sprite {
     position,
     collisionBlocks,
     platformCollisionBlocks,
+    enemyCollisionBlocks,
     imageSrc,
     frameRate,
     scale = 1,
@@ -74,16 +75,15 @@ class Player extends Sprite {
   }
 
   shouldPanCameraToTheLeft({ canvas, camera }) {
-    const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width
-    const scaledDownCanvasWidth = canvas.width / 4
-    console.log(cameraboxRightSide)
-    if (cameraboxRightSide >= 480) return
+    const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width;
+    const scaledDownCanvasWidth = canvas.width / 2.5;
+    if (cameraboxRightSide >= 480) return;
 
     if (
       cameraboxRightSide >=
       scaledDownCanvasWidth + Math.abs(camera.position.x)
     ) {
-      camera.position.x -= this.velocity.x
+      camera.position.x -= this.velocity.x;
     }
   }
 
@@ -104,14 +104,15 @@ class Player extends Sprite {
   }
 
   shouldPanCameraUp({ canvas, camera }) {
+    const scaledCanvasHeight = canvas.height / 2.5;
+  
     if (
       this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
-      432
-    )
+      432 // Este valor puede ser ajustado según la altura de tu juego
+    ) {
       return;
-
-    const scaledCanvasHeight = canvas.height / 4;
-
+    }
+  
     if (
       this.camerabox.position.y + this.camerabox.height >=
       Math.abs(camera.position.y) + scaledCanvasHeight
@@ -124,13 +125,6 @@ class Player extends Sprite {
     this.updateFrames();
     this.updateHitbox();
     this.updateCamerabox();
-    c.fillStyle = "rgba(0, 0, 255, 0.2)";
-    c.fillRect(
-      this.camerabox.position.x,
-      this.camerabox.position.y,
-      this.camerabox.width,
-      this.camerabox.height
-    );
     this.draw();
     this.position.x += this.velocity.x;
     this.updateHitbox();
