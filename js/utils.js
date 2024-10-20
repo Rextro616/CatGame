@@ -18,16 +18,19 @@ function platformCollision({ object1, object2 }) {
 }
 
 function enemyCollision() {
-  enemies.forEach(enemy => {
-      if (
-          player.position.x < enemy.x + enemy.width &&
-          player.position.x + player.width > enemy.x &&
-          player.position.y < enemy.y + enemy.height &&
-          player.position.y + player.height > enemy.y
-      ) {
-          console.log(`Colisión detectada con enemigo ID: ${enemy.id}`);
-          player.switchSprite("Hurt");
-          decreaseLife(); 
+  enemies.forEach((enemy) => {
+    if (
+      player.position.x < enemy.x + enemy.width &&
+      player.position.x + player.width > enemy.x &&
+      player.position.y < enemy.y + enemy.height &&
+      player.position.y + player.height > enemy.y
+    ) {
+      console.log(`Colisión detectada con enemigo ID: ${enemy.id}`);
+      if (!(player.animationKey === "Die")) {
+        player.switchSprite("Hurt");
       }
+
+      decreaseLife();
+    }
   });
 }

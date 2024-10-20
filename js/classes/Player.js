@@ -3,7 +3,7 @@ class Player extends Sprite {
     position,
     collisionBlocks,
     platformCollisionBlocks,
-    enemyCollisionBlocks,
+    animationKey = "Run",
     imageSrc,
     frameRate,
     scale = 1,
@@ -52,6 +52,7 @@ class Player extends Sprite {
     this.image = this.animations[key].image;
     this.frameBuffer = this.animations[key].frameBuffer;
     this.frameRate = this.animations[key].frameRate;
+    this.animationKey = key;
   }
 
   updateCamerabox() {

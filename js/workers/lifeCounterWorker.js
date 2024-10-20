@@ -4,7 +4,9 @@ self.addEventListener('message', (event) => {
   const { type } = event.data;
 
   if (type === 'decreaseLife') {
-    lives--;
+    if (lives > 0) {
+      lives--;
+    }
     if (lives <= 0) {
       self.postMessage({ type: 'gameOver' });
     } 
